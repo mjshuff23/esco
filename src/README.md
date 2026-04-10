@@ -16,6 +16,13 @@ Today, the codebase is still in the **foundation** stage. We are not building th
   - the offline-first evidence lane
   - ingestion, chunking, embeddings, vector lookup, and provenance resolution
   - currently uses in-memory test implementations so we can validate the shape before wiring real infrastructure
+- `esco_verifier`
+  - the Phase 2 routing and Support Profile lane
+  - claim extraction, claim routing, Support Profile construction, and consequences analysis
+  - currently uses deterministic heuristics so the contract is executable and easy to test
+- `esco_policy`
+  - the first policy gate for evidence-governed answers
+  - turns route plus evidence context into `allow`, `soften`, `abstain`, `block`, or `escalate`
 - `esco_runtime`
   - the local model lane
   - model configs, request and response types, and the adapter seam that future local inference runners will implement
@@ -26,12 +33,16 @@ The current shape is:
 
 1. `esco_contracts` defines the records everyone agrees on.
 2. `esco_retrieval` uses those records to ingest and retrieve evidence.
-3. `esco_runtime` is where a local model will eventually consume routed prompts and evidence-aware requests.
+3. `esco_verifier` turns prompts plus retrieved evidence into an inspectable route and Support Profile.
+4. `esco_policy` decides what ESCO is allowed to say after verification.
+5. `esco_runtime` is where a local model will eventually consume approved, evidence-aware requests.
 
 In other words:
 
 - `esco_contracts` answers: "What is a claim, evidence record, or audit event?"
 - `esco_retrieval` answers: "How do we get evidence and provenance?"
+- `esco_verifier` answers: "What kind of claim is this, and which ESCO mode should handle it?"
+- `esco_policy` answers: "Given the route and evidence, how cautious or assertive may ESCO be?"
 - `esco_runtime` answers: "How do we plug in a local model without hardcoding one runner everywhere?"
 
 ## Read this first
@@ -40,7 +51,9 @@ If you are learning the project as you go, this order will make the most sense:
 
 1. `src/esco_contracts/README.md`
 2. `src/esco_retrieval/README.md`
-3. `src/esco_runtime/README.md`
+3. `src/esco_verifier/README.md`
+4. `src/esco_policy/README.md`
+5. `src/esco_runtime/README.md`
 
 Then come back to the code itself.
 
