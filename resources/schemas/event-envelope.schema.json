@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://esco.local/schemas/event-envelope.schema.json",
+  "title": "ESCO Event Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "trace_id",
+    "session_id",
+    "sequence",
+    "append_only",
+    "actor",
+    "source",
+    "subject",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "claim.created",
+        "evidence.ingested",
+        "evidence.retrieved",
+        "support_profile.generated",
+        "ethics.decision_made",
+        "audit.entry_created",
+        "memory.consent_recorded",
+        "memory.write_skipped",
+        "memory.write_completed",
+        "policy.abstention_emitted",
+        "policy.escalation_triggered",
+        "search.request_blocked",
+        "search.content_sanitized",
+        "output.user_visible"
+      ]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "trace_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "append_only": {
+      "type": "boolean",
+      "const": true
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_type",
+        "actor_id",
+        "actor_domain"
+      ],
+      "properties": {
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "user",
+            "assistant",
+            "system",
+            "service",
+            "reviewer",
+            "external_source"
+          ]
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actor_domain": {
+          "type": "string",
+          "enum": [
+            "gateway",
+            "runtime",
+            "retrieval",
+            "verifier",
+            "policy",
+            "audit",
+            "memory",
+            "orchestrator",
+            "search",
+            "domain_bot",
+            "human_review"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel",
+        "origin"
+      ],
+      "properties": {
+        "channel": {
+          "type": "string",
+          "enum": [
+            "ui",
+            "api",
+            "batch",
+            "ingestion",
+            "policy",
+            "retrieval",
+            "search",
+            "manual_review"
+          ]
+        },
+        "origin": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request_id": {
+          "type": "string"
+        }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity_type",
+        "entity_id"
+      ],
+      "properties": {
+        "entity_type": {
+          "type": "string",
+          "enum": [
+            "claim",
+            "evidence_record",
+            "support_profile",
+            "ethics_decision",
+            "audit_entry",
+            "memory_consent_record",
+            "user_visible_output"
+          ]
+        },
+        "entity_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "description": "A typed ESCO domain record defined in domain-records.schema.json."
+    }
+  }
+}

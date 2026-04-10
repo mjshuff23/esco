@@ -32,6 +32,13 @@ The first implementation wave should produce four concrete artifacts:
 - a local model selection note with runtime constraints
 - a corpus and retrieval contract for the first offline-only MVP
 
+## Artifact Locations
+
+- ADRs: `resources/adrs/`
+- Schemas: `resources/schemas/`
+- Contracts: `resources/contracts/`
+- Validation matrix: `resources/validation/phase-0-validation-matrix.md`
+
 ## Definition of “Ready to Build”
 
 We can begin implementation when:

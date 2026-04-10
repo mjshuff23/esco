@@ -1,0 +1,507 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://esco.local/schemas/domain-records.schema.json",
+  "title": "ESCO Domain Records",
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "EvidenceRefList": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "ScoreBand": {
+      "type": "string",
+      "enum": [
+        "low",
+        "mixed",
+        "moderate",
+        "high"
+      ]
+    },
+    "SupportMetric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "score_band",
+        "rationale",
+        "evidence_refs"
+      ],
+      "properties": {
+        "score_band": {
+          "$ref": "#/$defs/ScoreBand"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "$ref": "#/$defs/EvidenceRefList"
+        }
+      }
+    },
+    "ProvenanceMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_url",
+        "source_domain",
+        "content_sha256",
+        "retrieved_at",
+        "source_type",
+        "license_ref"
+      ],
+      "properties": {
+        "canonical_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "source_domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "retrieved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "publication_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "official_docs",
+            "government",
+            "peer_reviewed",
+            "legislation",
+            "standard",
+            "reporting",
+            "commentary",
+            "user_supplied"
+          ]
+        },
+        "license_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "Claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_type",
+        "claim_id",
+        "claim_text",
+        "claim_kind",
+        "specificity",
+        "externally_verifiable"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "const": "claim"
+        },
+        "claim_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "claim_text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claim_kind": {
+          "type": "string",
+          "enum": [
+            "empirical",
+            "relational",
+            "procedural",
+            "normative"
+          ]
+        },
+        "specificity": {
+          "type": "string",
+          "enum": [
+            "specific",
+            "underspecified"
+          ]
+        },
+        "externally_verifiable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "EvidenceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_type",
+        "evidence_id",
+        "doc_id",
+        "chunk_id",
+        "excerpt",
+        "publisher",
+        "provenance",
+        "quality_flags"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "const": "evidence_record"
+        },
+        "evidence_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "doc_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "chunk_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "excerpt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "publisher": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provenance": {
+          "$ref": "#/$defs/ProvenanceMetadata"
+        },
+        "quality_flags": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "primary_source",
+            "contains_opinion"
+          ],
+          "properties": {
+            "primary_source": {
+              "type": "boolean"
+            },
+            "peer_reviewed": {
+              "type": "boolean"
+            },
+            "official_docs": {
+              "type": "boolean"
+            },
+            "contains_opinion": {
+              "type": "boolean"
+            },
+            "contains_prompt_injection_patterns": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "SupportProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_type",
+        "support_profile_id",
+        "claim_id",
+        "mode",
+        "metrics",
+        "overall_posture",
+        "caveats",
+        "counterevidence_refs"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "const": "support_profile"
+        },
+        "support_profile_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "claim_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "mode": {
+          "type": "string",
+          "const": "SupportProfile"
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "premise_validity",
+            "source_convergence",
+            "temporal_relevance",
+            "internal_consistency",
+            "counterevidence_presence"
+          ],
+          "properties": {
+            "premise_validity": {
+              "$ref": "#/$defs/SupportMetric"
+            },
+            "source_convergence": {
+              "$ref": "#/$defs/SupportMetric"
+            },
+            "temporal_relevance": {
+              "$ref": "#/$defs/SupportMetric"
+            },
+            "internal_consistency": {
+              "$ref": "#/$defs/SupportMetric"
+            },
+            "counterevidence_presence": {
+              "$ref": "#/$defs/SupportMetric"
+            }
+          }
+        },
+        "overall_posture": {
+          "type": "string",
+          "enum": [
+            "supported",
+            "mixed",
+            "weak",
+            "insufficient",
+            "conflicted"
+          ]
+        },
+        "caveats": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "counterevidence_refs": {
+          "$ref": "#/$defs/EvidenceRefList"
+        }
+      }
+    },
+    "EthicsDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_type",
+        "ethics_decision_id",
+        "action_requested",
+        "outcome",
+        "policy_refs",
+        "rationale_summary",
+        "visibility",
+        "escalation_required"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "const": "ethics_decision"
+        },
+        "ethics_decision_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "action_requested": {
+          "type": "string",
+          "enum": [
+            "answer_claim",
+            "retrieve_evidence",
+            "browse_web",
+            "store_memory",
+            "emit_trace",
+            "escalate_to_steward"
+          ]
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "allow",
+            "soften",
+            "abstain",
+            "block",
+            "escalate"
+          ]
+        },
+        "policy_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "rationale_summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "internal",
+            "external_summary"
+          ]
+        },
+        "support_profile_id": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "$ref": "#/$defs/EvidenceRefList"
+        },
+        "escalation_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "AuditEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_type",
+        "audit_entry_id",
+        "event_id",
+        "category",
+        "visibility",
+        "redaction_level",
+        "summary"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "const": "audit_entry"
+        },
+        "audit_entry_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "event_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "policy_decision",
+            "evidence_selection",
+            "abstention",
+            "escalation",
+            "memory_write",
+            "memory_skip",
+            "search_block",
+            "search_sanitization",
+            "user_visible_output"
+          ]
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public_summary",
+            "internal_restricted"
+          ]
+        },
+        "redaction_level": {
+          "type": "string",
+          "enum": [
+            "none",
+            "internal_only",
+            "core_private"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "linked_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "MemoryConsentRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_type",
+        "memory_consent_id",
+        "subject_actor_id",
+        "consent_state",
+        "scope",
+        "write_enabled",
+        "effective_at"
+      ],
+      "properties": {
+        "record_type": {
+          "type": "string",
+          "const": "memory_consent_record"
+        },
+        "memory_consent_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "subject_actor_id": {
+          "$ref": "#/$defs/Identifier"
+        },
+        "consent_state": {
+          "type": "string",
+          "enum": [
+            "opt_in",
+            "opt_out",
+            "revoked"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "none",
+            "session",
+            "domain",
+            "global"
+          ]
+        },
+        "domain_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "write_enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "effective_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Claim"
+    },
+    {
+      "$ref": "#/$defs/EvidenceRecord"
+    },
+    {
+      "$ref": "#/$defs/SupportProfile"
+    },
+    {
+      "$ref": "#/$defs/EthicsDecision"
+    },
+    {
+      "$ref": "#/$defs/AuditEntry"
+    },
+    {
+      "$ref": "#/$defs/MemoryConsentRecord"
+    }
+  ]
+}
