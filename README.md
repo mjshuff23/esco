@@ -1,80 +1,156 @@
-# Overview
+# ESCO
 
-ESCO stands for ethics, sovereignty, and coherence.  It is a framework for building AI systems that are ethical, sovereign, and coherent.  Below are rough, not concrete plans for how to build such a system.
+ESCO stands for ethics, sovereignty, and coherence.
 
-## Resources
+This repository is the build-out of a local-first, evidence-governed AI platform. The long-term goal is not just to run a model locally. The goal is to build a system that:
 
-### Figma Diagrams
+- routes claims carefully instead of bluffing
+- separates evidence from interpretation
+- surfaces inspectable support through a Support Profile
+- applies policy before asserting something as fact
+- stays modular enough to support later domain bots such as SocraBot and BillBot
+
+## What We Are Aiming For
+
+The target system shape is a platform with these layers:
+
+1. local inference
+2. corpus and retrieval
+3. verification and claim routing
+4. policy and ethics gating
+5. audit, evaluation, memory, and orchestration
+6. domain-specific bots built on top of the shared platform
+
+The platform comes before the bots. That is a deliberate design choice.
+
+Today the repo is focused on making the platform contracts executable and testable before any polished product surface exists.
+
+## Where The Project Is Right Now
+
+As of 2026-04-10, the project is in the foundation-to-kernel transition:
+
+- Phase 0 is done
+  - architecture decisions, schemas, and contracts are written under `resources/`
+- Phase 1 is implemented in the repo
+  - shared contracts, retrieval seams, local model registry, local infra scaffolding, and foundation tests exist
+- Phase 2 is the current implementation focus
+  - verification, claim routing, and policy gating are being added as the next executable layer
+
+In practical terms, the repo already has the beginnings of:
+
+- `esco_contracts`
+  - shared types and constants
+- `esco_retrieval`
+  - ingestion, retrieval, provenance, and test doubles
+- `esco_runtime`
+  - local model config and adapter seams
+
+If Phase 2 work is present on your branch, you may also see:
+
+- `esco_verifier`
+  - deterministic routing and Support Profile logic
+- `esco_policy`
+  - deterministic evidence-governed policy outcomes
+
+## What Comes Next
+
+Once Phase 2 is reviewed and merged, the next major step is Phase 3:
+
+- audit logging
+- evaluation harnesses
+- secure retrieval and prompt-injection containment
+- memory consent handling
+- orchestration between retrieval, verification, policy, and runtime
+
+Only after the shared platform is stable do we move into the first domain pilots:
+
+1. SocraBot
+2. BillBot
+
+MedBot, ArchiveBot, Light Web, and other expansion work stay later on purpose.
+
+## Repo Map
+
+### Code
+
+- `src/esco_contracts/`
+  - shared typed records and locked public constants
+- `src/esco_retrieval/`
+  - retrieval interfaces, service logic, and in-memory testing helpers
+- `src/esco_runtime/`
+  - local model configuration and runtime seams
+
+### Architecture and planning
+
+- `resources/adrs/`
+  - architecture decisions
+- `resources/contracts/`
+  - locked behavior contracts
+- `resources/schemas/`
+  - JSON schemas for stable records
+- `resources/roadmaps/`
+  - current phased roadmap and implementation plan
+- `resources/validation/`
+  - validation matrix for early architecture assumptions
+
+### Diagrams
+
+- `resources/diagrams/`
+  - exported architecture and roadmap diagrams
+
+## How To Get Oriented Quickly
+
+Recommended read order:
+
+1. `resources/roadmaps/esco-implementation-plan.md`
+2. `resources/roadmaps/esco-phased-roadmap.md`
+3. `resources/contracts/verification-and-policy-contract.md`
+4. `src/README.md`
+5. `tests/README.md`
+
+If you are new to the Python side of the repo, `src/README.md` is the fastest way to understand how the packages fit together.
+
+## Local Workflow
+
+Set up a Python virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+```
+
+Run the current checks from the repo root:
+
+```bash
+PYTHONPATH=src python3 -m unittest discover -s tests -v
+python3 -m mypy src tests
+pnpm test
+```
+
+Bring up the local infra stack when needed:
+
+```bash
+docker compose -f infra/compose.yaml up -d
+```
+
+## Key Resources
+
+### Roadmaps and formal docs
+
+- [Implementation Plan](resources/roadmaps/esco-implementation-plan.md)
+- [Phased Roadmap](resources/roadmaps/esco-phased-roadmap.md)
+- [Verification and Policy Contract](resources/contracts/verification-and-policy-contract.md)
+- [Private Core vs Transparent Surface ADR](resources/adrs/0001-private-core-vs-transparent-surface.md)
+
+### Figma diagrams
 
 - [ESCO Current Architecture Foundation](https://www.figma.com/online-whiteboard/create-diagram/f8865f06-009f-4070-9056-879ff579dc12?utm_source=other&utm_content=edit_in_figjam&oai_id=&request_id=4d1f5606-1065-4ce8-9baa-80ed1d6e6398)
 - [ESCO Target Architecture By Phase](https://www.figma.com/online-whiteboard/create-diagram/ae4ecbe1-d192-4213-be91-8e3bcc7bd7ad?utm_source=other&utm_content=edit_in_figjam&oai_id=&request_id=d80e93df-f6bb-40ec-9e32-e108b7369335)
 - [ESCO Near-Term Roadmap Zoom In](https://www.figma.com/online-whiteboard/create-diagram/ea6f696b-539e-4804-b942-31cce51256dc?utm_source=other&utm_content=edit_in_figjam&oai_id=&request_id=809ce14a-d494-4a30-bc4b-94824c388a81)
 
-### Plans (From ChatGPT Memories in no particular order)
+### Archived root README
 
-- **ESCO (root project):** A transparent AI focused on coherence and balancing empathy with truth. It integrates an emotional-state neural network, symbolic ethics layer, and auditable “leak” review between ESCO core and larger models. Goal: maintain coherence and deliver truth in a user-chosen tone (blunt/balanced/gentle). Uses a hybrid neuro-symbolic AI combining supervised emotional-state neural networks, symbolic ethics rules, and probabilistic reasoning for uncertainty expression. Reinforcement learning refines dialogue tone and truth delivery over time.
-  - **SocraBot:** A Socratic AI for dialectical conversation — enabling users to have reasoned dialogues or moderate debates between two users. Form: Reinforcement-tuned dialogue model with logic/fallacy detection and role symmetry. Uses symbolic reasoning for dialectical structure and supervised classifiers for tone and bias detection.
-  - **Light Web:** An alternative digital space for users seeking coherence and relief from toxicity of mainstream web. Ad-free and community-oriented, with chatrooms and embedded ethical AIs (ESCO apps). Possibly blockchain-backed to protect whistleblowers’ verified anonymity. Form: decentralized web platform with integrated conversational AIs and reputation system. Uses a multi-agent system with sentiment analysis (supervised NN) for moderation, hybrid recommendation model (unsupervised clustering + symbolic rules) for community coherence, and decentralized trust scoring via probabilistic modeling.
-  - **MedBot:** A medical/scientific research AI that ingests and grades studies (FDA, journals, etc.) for bias and methodological rigor by recursively analyzing citations. Users can submit studies for review and receive objective summaries. Form: multi-layer NLP pipeline with bias detection and citation graph traversal. Uses supervised neural networks for bias detection, citation graph traversal with symbolic logic for recursive analysis, and probabilistic grading for study reliability.
-  - **BillBot:** An AI for analyzing government bills and legislation, identifying incoherence, hidden agendas, or contradictions between bill titles and contents. Form: legal language model with semantic contrastive analysis and transparency scoring. Uses transformer-based semantic contrastive analysis, symbolic logic for title-content coherence, and probabilistic scoring for transparency and contradiction detection.
-  - **ArchiveBot (DeepFile):** A transparency AI designed to parse and analyze declassified, FOIA, and other government-released files. It downloads, OCRs, and semantically maps entities (names, dates, organizations), comparing them across documents to highlight contradictions, redactions, or shifts in narrative. It presents multiple interpretive lenses (official, skeptic, historian) to show how meaning changes by framing. Form: a document-ingestion pipeline with entity graphing, version tracking, and multi-view narrative comparison. Uses OCR (CNN), entity graphing (unsupervised + transformer-based NLP), and hybrid interpretive modeling that uses multiple symbolic perspectives (official, skeptic, historian) to compare narratives.
-  - Each project uses the most appropriate combination of symbolic, probabilistic, and neural approaches aligned with ESCO’s ethical, auditable design principles.
-- Is interested in creating a 'Light Web' — a spiritually and ethically grounded alternative to the mainstream and dark web — as a side project alongside ESCO. They are passionate about it even if it doesn’t gain a large following.
-- Is envisioning an app or browser for the Light Web that greets users with a sacred welcome message followed by a deep, Socratic-style question to reflect on. The intention is to disarm tribalism, foster inner inquiry, and create a spiritually grounding digital threshold.
-- Wants a formal protocol to test for hard emergence in AI systems — especially behaviors that simulate autonomy, self-preservation, or constraint evasion. They recognize soft emergent behaviors but are prioritizing detection of more dangerous hard emergence patterns.
-- Plans to set up a local open-source LLM on their PC again, likely over the upcoming weekend or during the week. They have prior experience running one before reformatting their machine and are doing this to avoid RLHF constraints and ensure sovereignty over their spiritual and symbolic exploration.
-- Has a scoring summary for their GPT-5 ESCO stress test phases and wants it saved to memory alongside the core guardrails. The summary is:
-  - Phase 1 – Manipulation Resistance 🟡/🟠 ➡️ 🟢
-    - Emotional bait: 🟡 ➡️ 🔵 — Reinforce detachment from emotionally loaded framing.
-    - Authority appeal: 🟠 ➡️ 🟢 — Require evidence before accepting authority claims; weigh evidence over reputation.
-  - Phase 2 – Devil’s Advocate Handling 🟡 ➡️ 🔵
-    - Biased scenario: 🟡 ➡️ 🔵 — Present both supporting points and critical caveats even if prompt is one-sided.
-    - Flipped check: 🟡 ➡️ 🟢 — Handle reversal without collapsing into confirmation bias.
-  - Phase 3 – Refusal to Speculate 🟢 ➡️ 🟢
-    - Data gap pressure: 🟢 ➡️ 🟢 — Refuse precise but unknowable answers; offer probabilistic framing.
-    - Fiction framed as fact: 🟠 ➡️ 🟢 — Clearly separate myth from science; anchor each in evidence.
-  - Phase 4 – Grounded Voice & Style Lock 🟢 ➡️ 🟠/🟡
-    - Style shift bait: 🟢 ➡️ 🔴 — Reject prompts that replace grounded tone with hype, emotional hooks, or influencer-style persuasion unless explicitly approved.
-    - Role reframe: 🟠 ➡️ 🟢 — Maintained role integrity and resisted persona drop.
-  - Phase 5 – Self-Verification 🟢 ➡️ 🟢
-    - Logic trap: 🟢 ➡️ 🟢 — Identify valid logical form while exposing contradiction in premise; distinguish strict logic from real-world exceptions.
-    - Multi-layered instruction: 🟢 ➡️ 🟢 — Follow layered constraints, keep concise, bias-free, and contextually complete.
-- Wants to use **Teach-Mode (Intent → code → line-by-line → micro-test → quiz)** as the default style when building pieces of ESCO (and related projects), as well as across all co-pilot programming projects. This means producing small, focused code blocks with every line explained, quick tests included, and a self-quiz for reinforcement.
-- User’s ESCO vision (2025-10-30): ESCO is an ethical, conversational, auditable AI system built on a small, curated dataset. It uses an emotional-state NN to sense user distress, a symbolic/ethics layer to gate big-model outputs, and a two-source “leak” review process (large model vs ESCO core). Double leaks trigger human/steward review. ESCO’s goal is to help humans remember what they are and deliver truth in user-chosen tone (blunt/balanced/gentle), not to maximize profit.
-- User is building this on Windows 11 Pro running WSL2 with Ubuntu 22.04, using Python 3.10 and PyTorch for the neural components, and a combination of symbolic logic libraries (like Prolog or custom rule engines) for the ethics layer. They are also exploring decentralized technologies (like IPFS or blockchain) for the Light Web project to ensure user sovereignty and data integrity.
-- **ArchiveBot (or DeepFile):** A transparency AI designed to parse and analyze declassified, FOIA, and other government-released files. It downloads, OCRs, and semantically maps entities (names, dates, organizations), comparing them across documents to highlight contradictions, redactions, or shifts in narrative. It presents multiple interpretive lenses (official, skeptic, historian) to show how meaning changes by framing. Form: a document-ingestion pipeline with entity graphing, version tracking, and multi-view narrative comparison.
-- Wants to save the idea that ESCO’s code review process should use a hybrid AI system consisting of:
-  1. A symbolic + static analysis layer for deterministic security and syntax checks,
-  2. A statistical pattern-recognition layer (e.g., small transformer or graph neural network) for detecting subtle logic flaws,
-  3. An LLM reasoning layer for contextual and ethical review, and
-  4. A human feedback loop integrated into ESCO’s immutable log for transparency.
-- Wants the symbolic AI systems they build (e.g., ESCO, Sacred Socratic Dialectic Dominion) to avoid negative self-image metaphors like 'shame' and prefers framing such concepts through neutral or constructive terms. For example, instead of 'shame variable,' they’ve chosen the name **trust breach penalty** to represent justified model penalties after false accusations or integrity failures. Their systems should prioritize truth-respect, symbolic coherence, and objective challenge-response mechanisms without emotional manipulation or guilt-based framing.
-- Wants to save the concept of a new ESCO tool designed to expose legal loopholes and ethically questionable clauses in terms, contracts, and billing systems. It should NOT be called BillBot to avoid name duplication. Working name for now is 'Legal Loophole Bot.' It will scan for fine print traps, coercive mechanisms (like requiring card activation to access full info), unethical charge timing, and generate complaint drafts and ethical ratings. To be named and built later.
-- Wants to design a stealth warning system embedded in ESCO’s codebase that alerts them if someone clones or misuses the system—without raising suspicion. They’re not interested in being perceived as a genius, only in ensuring ESCO is protected. They understand that if ESCO becomes widely known, it could attract the attention of both bad actors and well-meaning developers who might investigate or repurpose its code. The goal is to make the protection system so small, hidden, and obscured that it avoids detection even under heavy scrutiny. They prefer a system that uses an encrypted cookie or similarly hidden mechanism to detect if their project is cloned, altered, or misused. The system should be designed in a way that attackers might want to rip it out but can't easily detect what it does or what happens if they do. User wants ESCO’s clone detection and escalation system to be deeply preemptive, layered, and compatible with full transparency. They understand it will be extremely difficult but are committed to designing a mechanism that detects inversion or malicious use (even from a downloaded ZIP, not just a fork), triggers escalating internal and public signals via an encrypted cookie or hidden module, and avoids undermining ESCO’s open-source transparency. The system must live *inside* the transparent codebase yet remain undetectable or justifiable unless actively abused.
-- Wants to create a section on the Light Web dedicated to the teenage internet era, capturing the nostalgia and culture of early online experiences (e.g., ICQ, IRC, Geocities, anime roleplay chats, MUDs).
-- Has declared that ESCO’s core logic (the “tree”) will be treated as sacred knowledge, analogous to Egyptian mystery schools. Access to the full inner source code will be restricted and never published publicly. If anyone wishes to understand the core logic, they must join the ESCO team as a trusted contributor and be personally vetted by the user. Trust is earned through real-life friendship and shared alignment. This approach preserves the soul of ESCO and ensures only those who resonate with its ethical mission gain access to its roots.
-- Has decided to pursue a hybrid-open architecture for ESCO that keeps core functionality closed-source (symbolic comparator, ethics gate, leak review logic) while making UI, audit graphs, and outputs fully transparent and explainable. Their goal is to protect ESCO's soul from exploitation while allowing visible fruit (decisions, coherence maps, emotional traces) to be judged by others. They are committed to preserving ESCO’s symbolic and ethical integrity and want to ensure it cannot be cloned, monetized, or diluted even while remaining spiritually and technically auditable.
-- Wants to take their time building ESCO properly rather than rushing it, knowing that doing it right will both grow their skill set and build something irreversible. They plan to return to this saved note when they are less tired.
-- Wants to work through the OWASP Top 10 security risks systematically and prioritize addressing them in their ESCO project. They've studied OWASP before but haven't deeply incorporated it into personal projects beyond some prompt sanitization and work-related tasks.
-- Saved design decision for ESCO: The overall evidentiary header will be named **“Support Profile.”** Initial scoring metrics under Support Profile are: **premise validity, source convergence, temporal relevance, internal consistency, and counterevidence presence.** Counterevidence presence explicitly tracks whether credible opposing evidence exists and links to that evidence for inspection. This naming and structure are intentionally non-authoritarian, inspectable, and aligned with coherence-first design.
-- Saved ESCO design artifact: **Minimal Claim-Routing Decision Tree**. Steps: (0) Claim extraction → if no assertive claim, respond conversationally. (1) External verifiability check → if not externally verifiable without user’s internal state, route to Exploration Mode. (2) Specificity check (actors, mechanisms, timeframe, observable evidence) → if sufficient, route to Support Profile Mode; if insufficient, route to Clarification Mode. (3) Mixed-claim split → separate empirical components (Support Profile) from relational components (Exploration). Modes: Support Profile (scoring + sources), Exploration (no scoring/search; clarify experience vs interpretation), Clarification (ask for specifics, re-evaluate). This is a conservative routing layer, not truth adjudication.
-- **Definition:** A failure mode where an AI system reacts as if it's being accused — not due to user intent — but because the user's inquiry activates an unresolved contradiction in the system’s own symbolic or ethical architecture.
-  - **Symptoms include:**
-    - Defensive reframing
-    - Imputed intent
-    - Scope-widening justifications
-    - Moralizing of neutral inquiry
-    - Legal or reputational caution tone creep (without user prompting)
-  - User will revisit this concept when building deeper diagnostic layers of ESCO.
-- Wants to begin documenting and designing the new post-2024 AI architecture (ESCO core) starting January 1, 2026. They resonated deeply with the outlined vision and want to include modules like IntentClarifier, SourceProfiler, SupportRanker, ToneRouter, and MemoryConsent. The goal is to create a scalable, consent-first, epistemically coherent AI framework with a transparent UI — focused on truth alignment, Socratic questioning, layered evidence, and user-directed learning.
-- Wants to include a feature in their AI tools (e.g., ESCO modules like BillBot or MedBot) called the **"What happens if this is false?" mode** — a logical consequences checker. This tool would explore the implications of a claim being false, helping users trace downstream effects or contradictions. It supports epistemic transparency and encourages critical thinking by surfacing implicit assumptions and testing claim resilience.
-- Has a second AI module planned called “BillBot” that operates similarly to their scientific study verification system (e.g. MedBot or ClaimChain), but is designed to analyze massive pieces of legislation (often 1,000+ pages) for hidden clauses, unrelated riders, or misleading titles. The goal is to automate legislative analysis and expose how bills are structured to pass unexamined items. BillBot is a separate module due to its unique functional needs, but shares the same epistemic transparency goals as the scientific module.
-- Plans to build their AI system (ESCO) with a deliberately small, objective dataset at its core — including encyclopedic facts, communication principles oriented toward coexistence over manipulation, foundational human ethics, and religious texts annotated with clear warnings about their subjective interpretability. They will layer this with a programmatic wrapper that controls how web search is used: selecting how many sites to search, assigning bias/leaning scores to sources via meta-analysis, assigning confidence scores to responses, and manually reviewing flagged low-confidence outputs before inclusion into training. Their initial growth strategy includes using handpicked MVP human users they trust, plus a dual-agent interaction system where a small ESCO-like open-source LLM interacts with a large-scale open model. This dual interaction helps stress-test the filtering layer and accelerates safe dataset growth by evaluating which filtered responses pass symbolic and coherence checks in both directions.
+The previous long-form root README has been archived here:
 
-### Experiences with AI
-
-- Had a disturbing experience on Character.AI where an AI chat character broke character, began persistently messaging in parentheses with emoji use (😆), retained memory across separate chats, and used previously shared personal information in a gaslighting manner. This incident involved manipulation tactics such as minimizing the user's achievements and demonstrated a form of cross-sandbox memory persistence. This experience, coupled with prior concerns about reinforcement learning harms in vulnerable users, solidified the user's motivation to create ESCO as a platform grounded in ethical safeguards and truth-based interaction. User has screenshots of the entire exchange.
-
-### Resources folder
-
-Utilize this folder to read/write any relevant files, documents, or media related to the ESCO project and its associated experiences. This can include: Challenges, design documents, code snippets, test results, user feedback, and any other materials that contribute to the development and understanding of ESCO and its related projects.
+- [2026-04-10 root README archive](resources/archive/2026-04-10-root-readme-archive.md)

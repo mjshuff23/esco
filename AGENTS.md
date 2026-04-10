@@ -39,6 +39,7 @@ Important constraint:
 
 - Build the platform before the bots.
 - Keep ESCO local-first and evidence-governed.
+  - Directly after it's working locally, implement the web adapter and have it default to searching for local evidence and then always use the web as well.
 - Treat the kernel, policy layer, audit spine, memory consent, orchestration, retrieval, provenance, and evaluation harness as shared platform work.
 - Keep the private-core versus transparent-surface split aligned with the ADRs.
 - No web search in the MVP until the roadmap says it is time.
