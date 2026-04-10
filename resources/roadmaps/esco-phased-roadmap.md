@@ -31,77 +31,88 @@ The cleanest starting shape for ESCO is a modular, local-first platform with a p
 
 ### Core platform layers
 
-1. Interaction Gateway
-   - API, auth, session handling, user preference intake, file upload entrypoints
-   - routes all user requests into the orchestrator and ESCO kernel
+#### Interaction Gateway
 
-2. Local Inference Layer
-   - local LLM runtime
-   - quantized model runner or serving stack
-   - permissively licensed baseline model selection
+- API, auth, session handling, user preference intake, file upload entrypoints
+- routes all user requests into the orchestrator and ESCO kernel
 
-3. Corpus and Retrieval Layer
-   - curated local corpus
-   - provenance-tracked raw document store
-   - chunking and metadata pipeline
-   - embeddings plus vector index
-   - retrieval with metadata filtering
+#### Local Inference Layer
 
-4. Verification and Claim Routing Kernel
-   - claim extraction
-   - intent clarification
-   - evidence check
-   - support-profile routing
-   - exploration-mode routing
-   - clarification-mode routing
-   - "what happens if this is false?" consequences mode
+- local LLM runtime
+- quantized model runner or serving stack
+- permissively licensed baseline model selection
 
-5. Ethics and Policy Layer
-   - policy engine
-   - symbolic rule enforcement
-   - contradiction detector
-   - coherence scoring
-   - action authorization for retrieval, browsing, and tool use
-   - steward escalation rules
+#### Corpus and Retrieval Layer
 
-6. Model Orchestration Layer
-   - prompt builder
-   - model adapter interface
-   - dual-model verification
-   - leak-review comparison flow
+- curated local corpus
+- provenance-tracked raw document store
+- chunking and metadata pipeline
+- embeddings plus vector index
+- retrieval with metadata filtering
 
-7. Web Search and Sanitization Layer
-   - web search adapter
-   - allowlisted sources
-   - query caching
-   - web content sanitizer
-   - prompt-injection containment
+#### Verification and Claim Routing Kernel
 
-8. Memory and Context Layer
-   - opt-in memory consent
-   - context reconstruction
-   - per-domain memory policies
-   - document state storage
+- claim extraction
+- intent clarification
+- evidence check
+- support-profile routing
+- exploration-mode routing
+- clarification-mode routing
+- "what happens if this is false?" consequences mode
 
-9. Tone and State Layer
-   - user-selected tone target: blunt, balanced, gentle
-   - emotional state classifier
-   - distress and escalation detection
-   - tone router that cannot override truth constraints
+#### Ethics and Policy Layer
 
-10. Transparency, Audit, and Evaluation Spine
-   - immutable decision log
-   - reasoning trace graph
-   - human steward review queue
-   - explainable output surface
-   - factuality benchmarks
-   - RAG evaluation harness
-   - prompt-injection and jailbreak regression tests
+- policy engine
+- symbolic rule enforcement
+- contradiction detector
+- coherence scoring
+- action authorization for retrieval, browsing, and tool use
+- steward escalation rules
 
-11. Domain Modules
-   - SocraBot
-   - BillBot
-   - later: MedBot, ArchiveBot, Legal Loophole Bot, Light Web services
+#### Model Orchestration Layer
+
+- prompt builder
+- model adapter interface
+- dual-model verification
+- leak-review comparison flow
+
+#### Web Search and Sanitization Layer
+
+- web search adapter
+- allowlisted sources
+- query caching
+- web content sanitizer
+- prompt-injection containment
+
+#### Memory and Context Layer
+
+- opt-in memory consent
+- context reconstruction
+- per-domain memory policies
+- document state storage
+
+#### Tone and State Layer
+
+- user-selected tone target: blunt, balanced, gentle
+- emotional state classifier
+- distress and escalation detection
+- tone router that cannot override truth constraints
+
+#### Transparency, Audit, and Evaluation Spine
+
+- immutable decision log
+- reasoning trace graph
+- human steward review queue
+- explainable output surface
+- factuality benchmarks
+- RAG evaluation harness
+- prompt-injection and jailbreak regression tests
+
+#### Domain Modules
+
+- SocraBot
+- BillBot
+- later: MedBot, ArchiveBot, Legal Loophole Bot, Light Web services
 
 ### Suggested implementation boundary
 
