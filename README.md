@@ -33,8 +33,10 @@ As of 2026-04-10, the project is in the foundation-to-kernel transition:
   - architecture decisions, schemas, and contracts are written under `resources/`
 - Phase 1 is implemented in the repo
   - shared contracts, retrieval seams, local model registry, local infra scaffolding, and foundation tests exist
-- Phase 2 is the current implementation focus
-  - verification, claim routing, and policy gating are being added as the next executable layer
+- Phase 2 is implemented in the repo
+  - verification, claim routing, and policy gating are now part of the executable platform baseline
+- Phase 3 is next
+  - audit, evaluation, secure retrieval, memory consent, and orchestration are the next build target
 
 In practical terms, the repo already has the beginnings of:
 
@@ -44,9 +46,6 @@ In practical terms, the repo already has the beginnings of:
   - ingestion, retrieval, provenance, and test doubles
 - `esco_runtime`
   - local model config and adapter seams
-
-If Phase 2 work is present on your branch, you may also see:
-
 - `esco_verifier`
   - deterministic routing and Support Profile logic
 - `esco_policy`
@@ -54,7 +53,7 @@ If Phase 2 work is present on your branch, you may also see:
 
 ## What Comes Next
 
-Once Phase 2 is reviewed and merged, the next major step is Phase 3:
+The next major step is Phase 3:
 
 - audit logging
 - evaluation harnesses
