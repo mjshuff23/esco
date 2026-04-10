@@ -4,6 +4,12 @@ ESCO stands for ethics, sovereignty, and coherence.  It is a framework for build
 
 ## Resources
 
+### Figma Diagrams
+
+- [ESCO Current Architecture Foundation](https://www.figma.com/online-whiteboard/create-diagram/f8865f06-009f-4070-9056-879ff579dc12?utm_source=other&utm_content=edit_in_figjam&oai_id=&request_id=4d1f5606-1065-4ce8-9baa-80ed1d6e6398)
+- [ESCO Target Architecture By Phase](https://www.figma.com/online-whiteboard/create-diagram/ae4ecbe1-d192-4213-be91-8e3bcc7bd7ad?utm_source=other&utm_content=edit_in_figjam&oai_id=&request_id=d80e93df-f6bb-40ec-9e32-e108b7369335)
+- [ESCO Near-Term Roadmap Zoom In](https://www.figma.com/online-whiteboard/create-diagram/ea6f696b-539e-4804-b942-31cce51256dc?utm_source=other&utm_content=edit_in_figjam&oai_id=&request_id=809ce14a-d494-4a30-bc4b-94824c388a81)
+
 ### Plans (From ChatGPT Memories in no particular order)
 
 - **ESCO (root project):** A transparent AI focused on coherence and balancing empathy with truth. It integrates an emotional-state neural network, symbolic ethics layer, and auditable “leak” review between ESCO core and larger models. Goal: maintain coherence and deliver truth in a user-chosen tone (blunt/balanced/gentle). Uses a hybrid neuro-symbolic AI combining supervised emotional-state neural networks, symbolic ethics rules, and probabilistic reasoning for uncertainty expression. Reinforcement learning refines dialogue tone and truth delivery over time.
