@@ -71,30 +71,38 @@ class RetrievalResult:
 class Chunker(Protocol):
     def chunk(self, *, doc_id: str, text: str, publisher: str, provenance: ProvenanceMetadata, quality_flags: QualityFlags) -> list[DocumentChunk]:
         """Split a document into retrievable chunks."""
+        ...
 
 
 class EmbeddingProvider(Protocol):
     def embed(self, texts: Sequence[str]) -> list[tuple[float, ...]]:
         """Produce embeddings for document chunks or claim queries."""
+        ...
 
 
 class DocumentRepository(Protocol):
     def create_document(self, artifact: IngestionArtifact, content_sha256: str) -> str:
         """Persist a raw document and return a stable doc id."""
+        ...
 
     def store_chunk(self, chunk: DocumentChunk) -> None:
         """Persist a chunk and its provenance metadata."""
+        ...
 
     def get_chunk(self, chunk_id: str) -> DocumentChunk:
         """Return a previously stored chunk."""
+        ...
 
     def get_provenance(self, evidence_id: str) -> ProvenanceMetadata:
         """Resolve one evidence identifier to provenance metadata."""
+        ...
 
 
 class VectorStore(Protocol):
     def upsert(self, records: Sequence[VectorRecord]) -> None:
         """Store embeddings for later nearest-neighbor search."""
+        ...
 
     def query(self, embedding: tuple[float, ...], limit: int, source_types: Sequence[str], source_domains: Sequence[str]) -> list[SearchHit]:
         """Return the nearest matching chunk ids."""
+        ...
