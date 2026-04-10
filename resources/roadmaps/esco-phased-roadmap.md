@@ -6,71 +6,99 @@ Date: 2026-04-10
 
 Yes, I feel confident developing an architecture here.
 
-The repository does not yet contain implementation code, but it does contain enough signal to define:
+The repository still does not contain implementation code, but `resources/README.md` makes the starting path much more concrete. The project is no longer just a high-level ESCO concept map; it now has a practical starter shape:
 
-- the core ESCO platform boundaries
-- the sequencing between platform work and domain bots
-- the audit, ethics, memory, and orchestration spine
-- the first execution phases that can become projects, tickets, and issues
+- a local-first inference lane
+- a provenance-tracked corpus and RAG lane
+- a policy and verification lane
+- a browsing and prompt-injection defense lane
+- an evaluation and reproducibility lane
+- the ESCO-specific memory, tone, audit, and domain-bot layers on top
 
-What is still under-specified is not the high-level architecture. The main open questions are implementation choices inside the architecture:
+What is still under-specified is not the overall architecture. The main open questions are implementation choices inside that architecture:
 
+- which permissively licensed local model becomes the first baseline
 - which UI stack should front the system
-- whether the symbolic layer starts as a custom rules DSL or a Prolog-backed engine
+- whether the policy layer starts with OPA, Cedar, or a thinner custom rules adapter
+- which embedding model and vector store become the first default
 - whether the audit graph stays in Postgres first or gets a dedicated graph projection later
 - how much of the inner core remains private versus mirrored through transparent adapters
-- which domain bot becomes the first production pilot after the core platform
+- when web search should be enabled relative to the offline MVP
 
 ## Recommended System Shape
 
-The cleanest starting shape for ESCO is a modular platform with a private inner core and transparent outer surfaces.
+The cleanest starting shape for ESCO is a modular, local-first platform with a private inner core, transparent outer surfaces, and an evidence gate between the model and the final answer.
 
 ### Core platform layers
 
 1. Interaction Gateway
    - API, auth, session handling, user preference intake, file upload entrypoints
-   - routes all user requests into the ESCO kernel
+   - routes all user requests into the orchestrator and ESCO kernel
 
-2. Claim Routing Kernel
+2. Local Inference Layer
+   - local LLM runtime
+   - quantized model runner or serving stack
+   - permissively licensed baseline model selection
+
+3. Corpus and Retrieval Layer
+   - curated local corpus
+   - provenance-tracked raw document store
+   - chunking and metadata pipeline
+   - embeddings plus vector index
+   - retrieval with metadata filtering
+
+4. Verification and Claim Routing Kernel
    - claim extraction
    - intent clarification
+   - evidence check
    - support-profile routing
    - exploration-mode routing
    - clarification-mode routing
    - "what happens if this is false?" consequences mode
 
-3. Ethics and Coherence Layer
-   - symbolic rule engine
+5. Ethics and Policy Layer
+   - policy engine
+   - symbolic rule enforcement
    - contradiction detector
    - coherence scoring
-   - policy validation
+   - action authorization for retrieval, browsing, and tool use
    - steward escalation rules
 
-4. Model Orchestration Layer
+6. Model Orchestration Layer
    - prompt builder
    - model adapter interface
    - dual-model verification
    - leak-review comparison flow
 
-5. Memory and Context Layer
+7. Web Search and Sanitization Layer
+   - web search adapter
+   - allowlisted sources
+   - query caching
+   - web content sanitizer
+   - prompt-injection containment
+
+8. Memory and Context Layer
    - opt-in memory consent
    - context reconstruction
    - per-domain memory policies
    - document state storage
 
-6. Tone and State Layer
+9. Tone and State Layer
    - user-selected tone target: blunt, balanced, gentle
    - emotional state classifier
    - distress and escalation detection
    - tone router that cannot override truth constraints
 
-7. Transparency and Audit Spine
+10. Transparency, Audit, and Evaluation Spine
    - immutable decision log
    - reasoning trace graph
    - human steward review queue
    - explainable output surface
+   - factuality benchmarks
+   - RAG evaluation harness
+   - prompt-injection and jailbreak regression tests
 
-8. Domain Modules
+11. Domain Modules
    - SocraBot
    - BillBot
    - later: MedBot, ArchiveBot, Legal Loophole Bot, Light Web services
@@ -100,17 +128,21 @@ The cleanest starting shape for ESCO is a modular platform with a private inner 
   - review tasks
   - memory consent records
   - immutable audit entries
-- Object storage or filesystem-backed document store for uploads and OCR inputs
-- Vector search only when retrieval quality becomes a real bottleneck
+- Object storage or filesystem-backed document store for raw corpus inputs, WARC captures, PDFs, and OCR artifacts
+- Vector search as an early capability, not a late optimization
+- Metadata store with provenance, source quality flags, and retrieval policy fields
 - Graph projection later for reasoning traces and entity relationships if Postgres tables become too limiting
 
 ### Suggested service split
 
 - `esco-gateway`
-- `esco-kernel`
-- `esco-ethics`
-- `esco-audit`
+- `esco-runtime`
+- `esco-retrieval`
+- `esco-verifier`
+- `esco-policy`
+- `esco-audit-eval`
 - `esco-memory`
+- `esco-search`
 - `esco-model-orchestrator`
 - `escobot-socrabot`
 - `escobot-billbot`
@@ -129,9 +161,10 @@ Deliverables:
 - architecture decision record set
 - module boundary map
 - domain glossary for ESCO terms
-- event schema for claims, ethics decisions, audit entries, and steward review
+- event schema for claims, evidence, support profiles, ethics decisions, audit entries, and steward review
 - closed-core versus open-surface policy
 - security and misuse threat model for the platform
+- benchmark and evaluation contract for factuality, RAG quality, and injection resistance
 
 Exit criteria:
 
@@ -139,54 +172,68 @@ Exit criteria:
 - audit events and review triggers have a stable schema
 - the team can explain which parts are private, public, or user-visible
 
-### Phase 1: Core Interaction Kernel
+### Phase 1: Local Inference, Corpus, and Retrieval Foundation
 
 Goal:
-Stand up the MVP ESCO reasoning path without domain specialization.
+Stand up the local-first evidence foundation before domain specialization.
+
+Deliverables:
+
+- one permissively licensed local baseline model
+- local runtime path with quantized inference
+- curated starter corpus
+- provenance and metadata schema
+- chunking and embedding pipeline
+- vector index and retrieval API
+- offline-only execution path that works without web search
+
+Exit criteria:
+
+- the system can retrieve grounded local evidence with traceable provenance
+- the MVP can answer from the local corpus without external browsing
+- the build works in a local-first mode suitable for demos and controlled testing
+
+### Phase 2: Verification, Policy, and Claim Routing
+
+Goal:
+Make ESCO assert only when evidence and policy allow it.
 
 Deliverables:
 
 - claim extraction pipeline
 - intent clarifier
+- verifier path for evidence checking
 - support profile model
 - clarification mode
 - exploration mode
 - consequences mode for false-claim tracing
-- response envelope that separates evidence, inference, uncertainty, and tone
+- policy rules such as:
+  - no claim without evidence
+  - structured abstention on insufficient evidence
+  - higher confidence only with corroboration
+- baseline contradiction and coherence checks
 
 Exit criteria:
 
 - a plain user prompt can be routed into the correct ESCO mode
 - outputs visibly separate claim, evidence, caveat, and interpretation
+- unsupported assertions are downgraded, abstained, or blocked by policy
+- the system can explain why a claim was allowed, softened, or rejected
 
-### Phase 2: Ethics, Coherence, and Audit Spine
+### Phase 3: Audit, Evaluation, Secure Retrieval, Memory, and Orchestration
 
 Goal:
-Make ESCO inspectable and gateable before adding more capability.
+Harden the platform and make it reproducible before the domain pilots.
 
 Deliverables:
 
-- symbolic rule engine baseline
-- contradiction detector
-- coherence scoring
 - immutable audit log
 - reasoning trace graph schema
 - steward review queue
-- double-leak escalation policy
-
-Exit criteria:
-
-- every response can produce a reason trail
-- rule violations can stop or reshape a response
-- steward review can be triggered automatically
-
-### Phase 3: Model Orchestration, Memory, and Tone
-
-Goal:
-Add the layers that make ESCO feel like ESCO rather than a generic wrapper.
-
-Deliverables:
-
+- evaluation harness using factuality and RAG metrics
+- prompt-injection and jailbreak regression suite
+- web-search adapter with allowlists and caching
+- web content sanitizer
 - model adapter interface
 - dual-model verification flow
 - prompt builder with grounded style lock
@@ -197,6 +244,9 @@ Deliverables:
 
 Exit criteria:
 
+- the platform can be evaluated repeatedly against a stable benchmark suite
+- web-enabled retrieval is policy-gated and sanitized
+- prompt injection is treated as content, not instructions
 - memory is consent-aware
 - tone selection does not weaken truth constraints
 - large-model output is always mediated through ESCO rules
@@ -283,17 +333,19 @@ Every phase ticket should follow the same operating rule:
 Use this as the execution script for the first pass:
 
 1. We will start with Phase 0 and lock the architecture boundaries before building features.
-2. We will treat the ESCO kernel, ethics layer, audit spine, memory consent system, and model orchestration as platform work that all bots depend on.
+2. We will treat the ESCO kernel, policy and ethics layer, audit spine, memory consent system, model orchestration, retrieval layer, provenance schema, and evaluation harness as shared platform work that all bots depend on.
 3. We will move the active Linear ticket to `In Progress` before writing code.
 4. We will create or update the matching GitHub issue before implementation begins if repo work is involved.
 5. We will move the Linear ticket to `In Review` as soon as a PR is opened.
-6. We will not begin MedBot, ArchiveBot, or Light Web implementation until the core platform and at least one pilot bot are stable.
-7. We will use SocraBot and BillBot as the first proof that the shared ESCO architecture can support very different reasoning domains.
+6. We will not start SocraBot or BillBot until the local-first evidence foundation, policy rules, and evaluation baseline are working.
+7. We will use SocraBot and BillBot as the first domain proofs that the shared ESCO architecture can support very different reasoning styles.
+8. We will not begin MedBot, ArchiveBot, or Light Web implementation until the core platform and the pilot bots are stable.
 
 ## Immediate Next Recommendation
 
-Start with three concrete architecture artifacts:
+Start with four concrete implementation artifacts:
 
 - an ADR for the private-core versus transparent-surface split
-- an event schema for support profiles, ethics decisions, and audit entries
-- an interface contract for the claim routing kernel
+- an event and metadata schema for evidence, support profiles, ethics decisions, and audit entries
+- a local model selection note with runtime constraints
+- a corpus and retrieval contract for the first offline-only MVP
