@@ -1,0 +1,161 @@
+[
+  {
+    "id": "f2be02cd-76a5-4481-8d4a-64479c733d37",
+    "url": "https://linear.app/michaelshuff/project/phase-3-web-search-and-interactivity-2e1ce495d0e8",
+    "title": "Phase 3 — Web Search & Interactivity",
+    "type": "Epic",
+    "estimate": "L",
+    "labels": ["phase-3","search","security","infra","legal"],
+    "note": "Epic created in Linear. See repo and PR #5 for context."
+  },
+
+  {
+    "id": null,
+    "url": null,
+    "title": "Design esco_search contract and sanitization rules",
+    "type": "Story",
+    "estimate": "S",
+    "labels": ["phase-3","search","contract","security"],
+    "description": "Produce a JSON/typed contract for search results and a sanitization pipeline. Support Support Profile metrics and provenance. Add schema to resources/contracts/search-contract.md and include a doc block describing sanitization steps.",
+    "acceptance_criteria": [
+      "Create resources/contracts/search-contract.md with JSON/typed schema for search results including provenance and Support Profile fields (premise_validity, source_convergence, temporal_relevance, internal_consistency, counterevidence_presence).",
+      "Add unit tests validating contract parsing and example search-result payloads (tests should live under tests/ and pass in CI).",
+      "Add a documented doc block in the contract file describing the sanitization pipeline steps and example payloads."
+    ]
+  },
+
+  {
+    "id": null,
+    "url": null,
+    "title": "Scaffold src/esco_search package (interfaces + README)",
+    "type": "Story",
+    "estimate": "S",
+    "labels": ["phase-3","search","infra"],
+    "description": "Create package skeleton with Protocols for SearchClient, SearchResult, Sanitizer, and a README with usage and config examples.",
+    "acceptance_criteria": [
+      "Add src/esco_search/__init__.py, interfaces.py (with Protocol definitions), and README.md with import/usage examples.",
+      "Package is importable by tests (PYTHONPATH=src pytest can import src.esco_search.interfaces).",
+      "README documents config options and how to plug adapters and sanitizers."
+    ]
+  },
+
+  {
+    "id": null,
+    "url": null,
+    "title": "Implement web-search adapter(s) (pluggable provider adapter)",
+    "type": "Story",
+    "estimate": "M",
+    "labels": ["phase-3","search","integration"],
+    "description": "Implement at least one provider adapter (e.g., Bing or Google Custom Search or an open search API). Adapter must be pluggable behind the SearchClient interface, read API key from env, and support rate-limiting.",
+    "acceptance_criteria": [
+      "Adapter implementation behind SearchClient interface with configuration via env vars and config file.",
+      "Integration tests using mocked HTTP responses validate adapter behavior and rate-limit wrapper.",
+      "Docs updated with adapter configuration, required env vars, and secrets handling guidance."
+    ]
+  },
+
+  {
+    "id": null,
+    "url": null,
+    "title": "Add sanitization pipeline and policy integration",
+    "type": "Story",
+    "estimate": "M",
+    "labels": ["phase-3","policy","search","security"],
+    "description": "Implement server-side sanitization to redact/transform unsafe content, enforce policy blocking, and produce sanitized summaries. Integrate with esco_policy to emit search.request_blocked and search.content_sanitized events.",
+    "acceptance_criteria": [
+      "Sanitization module implemented with clear API and unit tests covering blocked, sanitized, and passthrough cases.",
+      "Policy integration maps decisions to auditable events: search.request_blocked and search.content_sanitized (with provenance attached).",
+      "Contracts updated if necessary and tests updated to reflect contract changes."
+    ]
+  },
+
+  {
+    "id": null,
+    "url": null,
+    "title": "Infra: secrets + rate-limited API key config",
+    "type": "Task",
+    "estimate": "S",
+    "labels": ["phase-3","infra","devops"],
+    "description": "Add secure pattern for search API keys (env var + docs), implement rate-limit wrapper and configuration in infra docs/compose scaffolding, and add .env.example entries.",
+    "acceptance_criteria": [
+      "Add .env.example with placeholder search API keys and docs for secure storage and rotation.",
+      "Rate-limit wrapper implemented with config toggles and demonstrated via an integration test (mocked).",
+      "Infra docs updated (infra/README.md or infra/compose.yaml comments) explaining runtime config for enabling/disabling web search and throttling."
+    ]
+  },
+
+  {
+    "id": null,
+    "url": null,
+    "title": "Legal/privacy review for web search integration",
+    "type": "Task",
+    "estimate": "S",
+    "labels": ["phase-3","legal","compliance"],
+    "description": "Coordinate with Legal to review third-party search provider TOS and privacy implications; produce sign-off checklist and required mitigations.",
+    "acceptance_criteria": [
+      "Produce a documented legal/privacy checklist stored in resources/validation/ or a Notion link with required mitigations and outstanding questions.",
+      "Record any required feature changes (e.g., data retention, user consent, PII redaction) and map to repository tasks.",
+      "Obtain explicit sign-off or a documented list of legal blockers to address before enabling web search in production."
+    ]
+  },
+
+  {
+    "id": null,
+    "url": null,
+    "title": "Orchestrator integration: retrieval-first routing + web fallback",
+    "type": "Story",
+    "estimate": "M",
+    "labels": ["phase-3","orchestrator","search"],
+    "description": "Update orchestrator to prefer local retrieval, then fall back to esco_search, ensuring provenance attached and Support Profile updated accordingly.",
+    "acceptance_criteria": [
+      "Orchestration code updated to call local retrieval first, then web search as fallback, preserving provenance and Support Profile metrics.",
+      "Integration test using retrieval mock + web-search mock validates fallback behavior and support-profile updates.",
+      "Documentation updated describing configuration flags to enable/disable web fallback."
+    ]
+  },
+
+  {
+    "id": null,
+    "url": null,
+    "title": "UI interactivity + Figma mockups",
+    "type": "Story",
+    "estimate": "M",
+    "labels": ["phase-3","UX","docs"],
+    "description": "Create admin and UX mockups in Figma for result review, and a static HTML demo showing sanitized vs raw results and provenance display in docs/demo_search_ui/.",
+    "acceptance_criteria": [
+      "Figma mockups link added to the task and repository docs with clear UI/UX decisions for provenance display and content-sanitization UI.",
+      "Static demo committed to docs/demo_search_ui/ showing example sanitized and raw results and provenance rendering.",
+      "Design notes in README describe how to review and approve results via the admin UI."
+    ]
+  },
+
+  {
+    "id": null,
+    "url": null,
+    "title": "Tests + CI: add sanitization mocks and e2e smoke",
+    "type": "Story",
+    "estimate": "S",
+    "labels": ["phase-3","test","ci"],
+    "description": "Add unit and integration tests to ensure sanitization, policy mapping, and audit events are produced correctly. Update CI pipeline to run these tests.",
+    "acceptance_criteria": [
+      "Unit and integration tests added for sanitization and policy mapping; tests included under tests/ and pass locally.",
+      "CI documentation updated and a test plan included for smoke e2e path (local retrieval -> web fallback -> sanitization -> audit).",
+      "CI pipeline configured to run the new tests (pytest step) and documented in README or CI config."
+    ]
+  },
+
+  {
+    "id": null,
+    "url": null,
+    "title": "Notion/Docs: implementation plan and handoff",
+    "type": "Task",
+    "estimate": "S",
+    "labels": ["phase-3","docs","handoff"],
+    "description": "Create or update Notion page with design decisions, API mappings, and dev runbook for enabling/disabling web search.",
+    "acceptance_criteria": [
+      "Notion link or resources/ doc created documenting design decisions, API mappings, and runtime toggles.",
+      "Handoff checklist for ops and legal describing steps to enable web search safely.",
+      "PR references the Notion/doc page in its description."
+    ]
+  }
+]
