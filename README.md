@@ -50,6 +50,10 @@ In practical terms, the repo already has the beginnings of:
   - deterministic routing and Support Profile logic
 - `esco_policy`
   - deterministic evidence-governed policy outcomes
+- `esco_audit`
+  - append-only audit entry scaffolding
+- `esco_orchestrator`
+  - a local-only orchestration seam and CLI demo path
 
 ## What Comes Next
 
@@ -78,6 +82,10 @@ MedBot, ArchiveBot, Light Web, and other expansion work stay later on purpose.
   - retrieval interfaces, service logic, and in-memory testing helpers
 - `src/esco_runtime/`
   - local model configuration and runtime seams
+- `src/esco_audit/`
+  - append-only audit entry scaffolding
+- `src/esco_orchestrator/`
+  - local orchestration and CLI demo helpers
 
 ### Architecture and planning
 
@@ -131,6 +139,12 @@ Bring up the local infra stack when needed:
 
 ```bash
 docker compose -f infra/compose.yaml up -d
+```
+
+Try the current local demo lane:
+
+```bash
+PYTHONPATH=src python -m esco_cli "Phase 2 is implemented in the repo."
 ```
 
 ## Key Resources

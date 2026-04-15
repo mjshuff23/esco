@@ -17,14 +17,7 @@ The project goal is to build a local-first, evidence-governed AI platform that r
 
 The long-term platform supports multiple domain bots, but the shared ESCO platform comes first.
 
-## Current Build Stage
-
-The repository is still in the early platform phases.
-
-Current order of work:
-
-1. Phase 0: architecture and governance baseline
-2. Phase 1: local inference, corpus, and retrieval foundation
+## Current Build Stagekj
 3. Phase 2: verification, policy, and claim routing
 4. Phase 3: audit, evaluation, secure retrieval, memory, and orchestration
 5. Phase 4: SocraBot pilot

@@ -22,6 +22,12 @@ class GenerationRequest:
     route: str
     user_prompt: str
     evidence_refs: tuple[str, ...] = field(default_factory=tuple)
+    evidence_excerpts: tuple[str, ...] = field(default_factory=tuple)
+    policy_outcome: str | None = None
+    support_posture: str | None = None
+    missing_details: tuple[str, ...] = field(default_factory=tuple)
+    caveats: tuple[str, ...] = field(default_factory=tuple)
+    response_guidance: tuple[str, ...] = field(default_factory=tuple)
 
 
 @dataclass(frozen=True)

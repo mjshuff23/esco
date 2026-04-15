@@ -19,6 +19,10 @@ The runtime layer will eventually answer questions like:
   - typed data structures for runtime config and generation I/O
 - `adapters.py`
   - the interface for model runners and the current stub implementation
+- `adapters_grounded.py`
+  - a deterministic grounded adapter for the local CLI demo lane
+- `adapters_gemma.py`
+  - an optional Gemma-family adapter that lazy-loads heavyweight runtime deps
 - `registry.py`
   - the default model registry for the offline MVP
 - `__init__.py`
@@ -33,7 +37,7 @@ This file contains three simple records:
   - includes family, license, quantization, context window, and RAM guidance
 - `GenerationRequest`
   - the input we will eventually pass to a local model
-  - includes the route, user prompt, and optional evidence refs
+  - includes the route, user prompt, evidence refs, evidence excerpts, and response guidance from policy and verification
 - `GenerationResponse`
   - the output a model runner should return
   - includes model id, generated text, and whether a fallback was used
@@ -55,6 +59,32 @@ This is a useful pattern when learning:
 - define the shape first
 - plug in a fake implementation
 - replace it later with the real one
+
+## `adapters_grounded.py`: the bridge adapter
+
+This file exists so the repo can exercise an end-to-end local interaction path
+before a heavier runtime dependency is required.
+
+- `GroundedDraftAdapter`
+  - builds a cautious answer from the current route, policy outcome, caveats,
+    and evidence excerpts
+- `build_grounded_demo_config()`
+  - returns the lightweight runtime config used by the local CLI demo
+
+This adapter is useful for:
+
+- local orchestration and CLI demos
+- deterministic tests
+- proving the runtime seam before a real model runner is ready
+
+It is not meant to be the long-term inference layer.
+
+## `adapters_gemma.py`: the optional real runner
+
+This file is the first adapter that points toward actual local inference.
+
+It lazy-loads `transformers` and `torch` so the repo does not need those
+dependencies just to run the scaffold or the CLI demo.
 
 ## `registry.py`: picking defaults
 
@@ -85,6 +115,7 @@ Even before real inference exists, this package gives the project:
 - one place to lock model defaults
 - one place to describe the request and response shape
 - one seam where a future llama.cpp, Ollama, vLLM, or other local runner can plug in
+- one lightweight adapter that keeps the current local orchestrator usable
 
 That keeps model decisions from leaking all over the codebase.
 
@@ -92,7 +123,7 @@ That keeps model decisions from leaking all over the codebase.
 
 This package does **not** yet include:
 
-- a real local inference backend
+- a production-ready local inference backend
 - prompt construction
 - multi-model orchestration
 - streaming responses

@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from hashlib import sha256
 from math import sqrt
+import re
 from typing import Sequence
 from uuid import uuid4
 
@@ -37,14 +38,14 @@ class SimpleParagraphChunker:
 class DeterministicEmbedder:
     """Cheap deterministic embeddings so the retrieval seam can be tested without a model."""
 
-    _dimension = 8
+    _dimension = 32
 
     def embed(self, texts: Sequence[str]) -> list[tuple[float, ...]]:
         return [self._embed_text(text) for text in texts]
 
     def _embed_text(self, text: str) -> tuple[float, ...]:
         buckets = [0.0] * self._dimension
-        for token in text.lower().split():
+        for token in re.findall(r"[a-z0-9]+", text.lower()):
             bucket = int(sha256(token.encode("utf-8")).hexdigest(), 16) % self._dimension
             buckets[bucket] += 1.0
         norm = sqrt(sum(value * value for value in buckets)) or 1.0

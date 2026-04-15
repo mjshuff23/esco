@@ -11,17 +11,23 @@ Since the codebase is still early, our tests are not trying to prove that the wh
 - `test_model_registry.py`
 - `test_verifier_service.py`
 - `test_policy_service.py`
+- `test_audit_service.py`
+- `test_adapters_gemma.py`
+- `test_orchestrator_service.py`
+- `test_cli.py`
 - `bootstrap.py`
 
 ## Why these tests exist
 
-At this stage, there are five big risks:
+At this stage, there are seven big risks:
 
 1. we accidentally change a public ESCO contract
 2. we build the retrieval flow in a way that breaks provenance or hides bad input
 3. we let model defaults drift away from the decisions we already locked in docs
 4. we let routing logic drift away from the locked Phase 2 contract
 5. we let policy outcomes become more assertive than the evidence allows
+6. we let the audit seam stop behaving like an append-only store
+7. we wire the local orchestration flow in a way that breaks the repo's first interactive path
 
 Each test file protects one of those areas.
 
@@ -115,6 +121,62 @@ Why that matters:
 - this is the first place where the repo enforces "do not bluff"
 - the tests make sure policy outcomes stay aligned with the Phase 2 contract
 
+## `test_audit_service.py`
+
+This file protects the early **audit seam**.
+
+What it checks:
+
+- audit entries can be recorded and listed
+- duplicate audit ids are rejected
+- audit entries remain frozen once created
+
+Why that matters:
+
+- the Phase 3 audit spine starts with append-only behavior
+- if audit entries become mutable or duplicative, later replay and review stories get weaker fast
+
+## `test_adapters_gemma.py`
+
+This file protects the optional **Gemma runtime adapter scaffold**.
+
+What it checks:
+
+- the adapter imports without pulling heavyweight runtime deps immediately
+- missing runtime dependencies raise a clear error only when the adapter is asked to load
+
+Why that matters:
+
+- the repo should stay lightweight for contributors who are not ready to run a full local model yet
+- optional runtime integrations should fail clearly rather than mysteriously
+
+## `test_orchestrator_service.py`
+
+This file protects the first **end-to-end local interaction path**.
+
+What it checks:
+
+- a factual prompt can move through orchestration and return a grounded answer
+- an underspecified claim still routes to clarification inside the full flow
+
+Why that matters:
+
+- this is the first place where retrieval, verification, policy, and runtime all meet
+- it protects the bridge between the Phase 2 kernel and the future Phase 3 hardening work
+
+## `test_cli.py`
+
+This file protects the minimal **local CLI surface**.
+
+What it checks:
+
+- the one-shot CLI path renders a structured response with route, policy, and answer sections
+
+Why that matters:
+
+- it gives the repo a runnable local demo path
+- it catches accidental output regressions in the first user-facing interface
+
 ## `bootstrap.py`
 
 This small helper makes the `src` layout work in tests by adding `src/` to `sys.path`.
@@ -135,21 +197,27 @@ From the repo root:
 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
+You can also run the pytest-collected suite in the virtual environment:
+
+```bash
+./.venv/bin/python -m pytest -q
+```
+
 Or through the existing package script:
 
 ```bash
 pnpm test
 ```
 
-## Why we use `unittest` right now
+## Why we still lean on `unittest`
 
-We are using Python's built-in `unittest` module for now because:
+We still lean on Python's built-in `unittest` module because:
 
 - it keeps the dependency surface tiny
 - it is enough for the current size of the project
 - it is good for learning and early scaffolding
 
-Later we may move to `pytest` if the suite grows and we want richer fixtures or parametrization.
+Some focused tests already use `pytest`, especially where smoke tests or monkeypatch-style checks are simpler there.
 
 ## What is not tested yet
 
@@ -161,7 +229,8 @@ These are still future concerns:
 - real local inference
 - audit event emission for verifier and policy decisions
 - OPA or Rego-backed policy enforcement
-- end-to-end user request flows
+- web-enabled orchestration
+- production UI flows
 
 So the current tests are not "the whole system works" tests.
 

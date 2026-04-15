@@ -23,6 +23,12 @@ Today, the codebase is still in the **foundation** stage. We are not building th
 - `esco_policy`
   - the first policy gate for evidence-governed answers
   - turns route plus evidence context into `allow`, `soften`, `abstain`, `block`, or `escalate`
+- `esco_audit`
+  - the first append-only audit seam
+  - turns events into small, persistable audit entries
+- `esco_orchestrator`
+  - the first end-to-end glue layer
+  - wires retrieval, verification, policy, and a local adapter into one interactive flow
 - `esco_runtime`
   - the local model lane
   - model configs, request and response types, and the adapter seam that future local inference runners will implement
@@ -35,7 +41,9 @@ The current shape is:
 2. `esco_retrieval` uses those records to ingest and retrieve evidence.
 3. `esco_verifier` turns prompts plus retrieved evidence into an inspectable route and Support Profile.
 4. `esco_policy` decides what ESCO is allowed to say after verification.
-5. `esco_runtime` is where a local model will eventually consume approved, evidence-aware requests.
+5. `esco_runtime` is where a local model or deterministic local adapter consumes approved, evidence-aware requests.
+6. `esco_audit` turns important events into append-only audit entries.
+7. `esco_orchestrator` runs the current packages together as one local-first interaction path.
 
 In other words:
 
@@ -44,6 +52,8 @@ In other words:
 - `esco_verifier` answers: "What kind of claim is this, and which ESCO mode should handle it?"
 - `esco_policy` answers: "Given the route and evidence, how cautious or assertive may ESCO be?"
 - `esco_runtime` answers: "How do we plug in a local model without hardcoding one runner everywhere?"
+- `esco_audit` answers: "How do we preserve a small append-only record of what happened?"
+- `esco_orchestrator` answers: "How do we run the whole local lane in one place?"
 
 ## Read this first
 
@@ -54,6 +64,7 @@ If you are learning the project as you go, this order will make the most sense:
 3. `src/esco_verifier/README.md`
 4. `src/esco_policy/README.md`
 5. `src/esco_runtime/README.md`
+6. `src/esco_orchestrator/README.md`
 
 Then come back to the code itself.
 
@@ -96,3 +107,13 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 ```
 
 Later we will likely move to editable installs and a fuller dependency set, but this is enough for the current scaffold.
+
+## Local demo
+
+There is now a minimal local CLI path for the repo's seeded corpus:
+
+```bash
+PYTHONPATH=src python -m esco_cli "Phase 2 is implemented in the repo."
+```
+
+This is intentionally a demo lane, not the final product surface.
