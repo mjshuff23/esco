@@ -1,12 +1,12 @@
 [
   {
-    "id": "f2be02cd-76a5-4481-8d4a-64479c733d37",
-    "url": "https://linear.app/michaelshuff/project/phase-3-web-search-and-interactivity-2e1ce495d0e8",
-    "title": "Phase 3 — Web Search & Interactivity",
-    "type": "Epic",
+    "id": "ESC-4",
+    "url": "https://linear.app/michaelshuff/issue/ESC-4/phase-3-audit-evaluation-secure-retrieval-memory-and-orchestration",
+    "title": "Phase 3 — Secure Retrieval and Web Search Workstream",
+    "type": "Workstream Draft",
     "estimate": "L",
     "labels": ["phase-3","search","security","infra","legal"],
-    "note": "Epic created in Linear. See repo and PR #5 for context."
+    "note": "This repo-local draft covers one Phase 3 workstream inside the broader ESC-4 milestone. The canonical Phase 3 scope lives in Linear ESC-4, GitHub issue #4, the roadmap docs, and Notion."
   },
 
   {

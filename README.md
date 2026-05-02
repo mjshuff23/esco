@@ -158,6 +158,10 @@ PYTHONPATH=src python -m esco_cli "Phase 2 is implemented in the repo."
 
 ### Figma diagrams
 
+Repo-local exported snapshots in `resources/diagrams/` are the tracked references used in this repository.
+
+The links below are the original 2026-04-10 Figma `create-diagram` URLs and should be replaced with stable board URLs before they are treated as the canonical live references.
+
 - [ESCO Current Architecture Foundation](https://www.figma.com/online-whiteboard/create-diagram/f8865f06-009f-4070-9056-879ff579dc12?utm_source=other&utm_content=edit_in_figjam&oai_id=&request_id=4d1f5606-1065-4ce8-9baa-80ed1d6e6398)
 - [ESCO Target Architecture By Phase](https://www.figma.com/online-whiteboard/create-diagram/ae4ecbe1-d192-4213-be91-8e3bcc7bd7ad?utm_source=other&utm_content=edit_in_figjam&oai_id=&request_id=d80e93df-f6bb-40ec-9e32-e108b7369335)
 - [ESCO Near-Term Roadmap Zoom In](https://www.figma.com/online-whiteboard/create-diagram/ea6f696b-539e-4804-b942-31cce51256dc?utm_source=other&utm_content=edit_in_figjam&oai_id=&request_id=809ce14a-d494-4a30-bc4b-94824c388a81)

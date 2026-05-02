@@ -17,12 +17,13 @@ The project goal is to build a local-first, evidence-governed AI platform that r
 
 The long-term platform supports multiple domain bots, but the shared ESCO platform comes first.
 
-## Current Build Stagekj
-3. Phase 2: verification, policy, and claim routing
-4. Phase 3: audit, evaluation, secure retrieval, memory, and orchestration
-5. Phase 4: SocraBot pilot
-6. Phase 5: BillBot pilot
-7. Phase 6: expansion planning
+## Current Build Stage
+
+1. Phase 2: verification, policy, and claim routing
+2. Phase 3: audit, evaluation, secure retrieval, memory, and orchestration
+3. Phase 4: SocraBot pilot
+4. Phase 5: BillBot pilot
+5. Phase 6: expansion planning
 
 Important constraint:
 
