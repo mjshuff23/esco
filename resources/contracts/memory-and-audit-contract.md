@@ -65,6 +65,7 @@ Required categories:
 
 - `policy_decision`
 - `evidence_selection`
+- `support_profile_generation`
 - `abstention`
 - `escalation`
 - `memory_write`

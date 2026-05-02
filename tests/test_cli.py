@@ -20,6 +20,8 @@ class CliTests(unittest.TestCase):
         self.assertIn("Route:", output)
         self.assertIn("Policy:", output)
         self.assertIn("Answer:", output)
+        self.assertIn("Audit:", output)
+        self.assertIn("Audit IDs:", output)
 
 
 if __name__ == "__main__":

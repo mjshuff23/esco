@@ -9,7 +9,8 @@ single local-first flow:
 2. retrieve local evidence when the route supports it
 3. build a Support Profile when appropriate
 4. apply the policy gate
-5. produce a grounded draft response through a local adapter
+5. record append-only audit summaries when an audit service is configured
+6. produce a grounded draft response through a local adapter
 
 ## What this package is for right now
 
@@ -22,11 +23,11 @@ The current slice is intentionally small:
 - repo-doc seed corpus for demos
 - no web search
 - no memory writes
-- no audit spine wiring yet
+- optional in-memory audit wiring for the local demo path
 
 That makes it a good Phase 2 to Phase 3 bridge. We can now exercise the full
-flow from prompt to grounded answer without pretending the heavier platform work
-already exists.
+flow from prompt to grounded answer with inspectable audit entries, without
+pretending the heavier platform work already exists.
 
 ## Main files
 
@@ -46,7 +47,8 @@ PYTHONPATH=src python -m esco_cli "Phase 2 is implemented in the repo."
 ```
 
 That path seeds a local corpus from repository docs and runs the prompt through
-retrieval, verification, policy, and a deterministic grounded adapter.
+retrieval, verification, policy, audit recording, and a deterministic grounded
+adapter.
 
 Later work can swap the deterministic adapter for a real local model runner
 without changing the orchestrator shape.

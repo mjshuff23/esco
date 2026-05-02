@@ -7,6 +7,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 import re
 
+from esco_audit import AuditService
+from esco_audit.testing import InMemoryAuditStore
 from esco_policy import PolicyService
 from esco_retrieval import IngestionArtifact, RetrievalService
 from esco_retrieval.testing import (
@@ -52,6 +54,7 @@ def build_demo_orchestrator(repo_root: Path | None = None) -> OrchestratorServic
         verifier=VerificationService(),
         policy=PolicyService(),
         runtime=GroundedDraftAdapter(config=build_grounded_demo_config()),
+        audit=AuditService(store=InMemoryAuditStore()),
     )
     _seed_repo_corpus(service.retrieval, root)
     return service
