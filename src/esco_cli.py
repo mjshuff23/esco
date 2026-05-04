@@ -26,6 +26,9 @@ def render_outcome(outcome: OrchestratorOutcome) -> str:
         f"Route: {outcome.verification.route_decision.route or 'Conversational'}",
         f"Policy: {outcome.ethics_decision.outcome}",
     ]
+    if outcome.audit_entries:
+        lines.append(f"Audit: {len(outcome.audit_entries)} entries")
+        lines.append(f"Audit IDs: {', '.join(entry.audit_entry_id for entry in outcome.audit_entries)}")
     if outcome.verification.route_decision.claim is not None:
         lines.append(f"Claim: {outcome.verification.route_decision.claim.claim_text}")
 

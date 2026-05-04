@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from esco_contracts.models import EthicsDecision, EvidenceRecord
+from esco_contracts.models import AuditEntry, EthicsDecision, EvidenceRecord
 from esco_runtime.models import GenerationRequest, GenerationResponse
 from esco_verifier.models import VerificationOutcome
 
@@ -15,6 +15,7 @@ class OrchestratorOutcome:
     verification: VerificationOutcome
     ethics_decision: EthicsDecision
     evidence_records: tuple[EvidenceRecord, ...] = field(default_factory=tuple)
+    audit_entries: tuple[AuditEntry, ...] = field(default_factory=tuple)
     generation_request: GenerationRequest | None = None
     generation_response: GenerationResponse | None = None
 

@@ -158,11 +158,13 @@ What it checks:
 
 - a factual prompt can move through orchestration and return a grounded answer
 - an underspecified claim still routes to clarification inside the full flow
+- audit-enabled orchestration records evidence selection, Support Profile, policy decision, abstention/escalation, and user-visible output entries
+- orchestration still works without an audit service configured
 
 Why that matters:
 
 - this is the first place where retrieval, verification, policy, and runtime all meet
-- it protects the bridge between the Phase 2 kernel and the future Phase 3 hardening work
+- it protects the bridge between the Phase 2 kernel and the Phase 3 audit spine
 
 ## `test_cli.py`
 
@@ -170,7 +172,7 @@ This file protects the minimal **local CLI surface**.
 
 What it checks:
 
-- the one-shot CLI path renders a structured response with route, policy, and answer sections
+- the one-shot CLI path renders a structured response with route, policy, answer, and audit summary sections
 
 Why that matters:
 
@@ -227,7 +229,7 @@ These are still future concerns:
 - real Qdrant integration
 - real embedding models
 - real local inference
-- audit event emission for verifier and policy decisions
+- persistent audit storage wired into the local orchestrator
 - OPA or Rego-backed policy enforcement
 - web-enabled orchestration
 - production UI flows
