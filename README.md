@@ -155,6 +155,7 @@ PYTHONPATH=src python -m esco_cli "Phase 2 is implemented in the repo."
 - [Phased Roadmap](resources/roadmaps/esco-phased-roadmap.md)
 - [Verification and Policy Contract](resources/contracts/verification-and-policy-contract.md)
 - [Private Core vs Transparent Surface ADR](resources/adrs/0001-private-core-vs-transparent-surface.md)
+- [Language Boundary Strategy ADR](resources/adrs/0002-language-boundary-strategy.md)
 
 ### Figma diagrams
 
